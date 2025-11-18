@@ -51,4 +51,3 @@ instruction-manager/
 - Desktop: 280px sidebar + основной контент
 - Tablet: Адаптивная верстка
 - Mobile: Выдвижное боковое меню
-

@@ -62,7 +62,8 @@ export class Storage {
             title: instructionData.title,
             steps: instructionData.steps,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
+            favorite: false
         };
         data.instructions.push(newInstruction);
         this.saveData(data);
@@ -77,6 +78,19 @@ export class Storage {
             instruction.updatedAt = new Date().toISOString();
             this.saveData(data);
         }
+    }
+
+    toggleFavorite(id) {
+        const data = this.getData();
+        const instruction = data.instructions.find(i => i.id === id);
+        if (instruction) {
+            instruction.favorite = !instruction.favorite;
+            this.saveData(data);
+        }
+    }
+
+    getFavoriteInstructions() {
+        return this.getData().instructions.filter(i => i.favorite);
     }
 
     deleteInstruction(id) {

@@ -542,6 +542,37 @@ body {
     margin-top: 24px;
 }
 
+/* ====== Favorites ====== */
+.favorites-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.favorite-item {
+    background: var(--card-bg);
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.favorite-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.favorite-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.favorite-item a:hover {
+    text-decoration: underline;
+}
+
 /* ====== Footer ====== */
 .app-footer {
     background: var(--header-bg);

@@ -8,6 +8,7 @@ export class UIManager {
     init() {
         this.renderGroups();
         this.setupEventListeners();
+        this.updateWelcomeScreen();
     }
 
     setupEventListeners() {
@@ -32,6 +33,16 @@ export class UIManager {
 
         document.getElementById('back-to-list').addEventListener('click', () => {
             this.showInstructionsList();
+        });
+
+        // Избранное
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.favorite-btn')) {
+                e.stopPropagation();
+                const btn = e.target.closest('.favorite-btn');
+                const id = btn.dataset.id;
+                this.toggleFavorite(id);
+            }
         });
 
         // Модальные окна
@@ -97,26 +108,33 @@ export class UIManager {
         });
     }
 
-    selectGroup(groupId) {
+    selectGroup(groupId, instructionId = null) {
         this.currentGroupId = groupId;
-        
+
         // Обновить активное состояние
         document.querySelectorAll('.group-item').forEach(item => {
             item.classList.remove('active');
         });
-        
+
         const selectedItem = document.querySelector(`[data-group-id="${groupId}"]`);
         if (selectedItem) {
             selectedItem.classList.add('active');
         }
-        
+
         // Показать инструкции группы
         this.renderInstructions(groupId);
         this.showInstructionsList();
-        
+
         // Обновить заголовок
         const group = this.storage.getGroups().find(g => g.id === groupId);
         document.getElementById('current-group-title').textContent = group.name;
+
+        // Если указана инструкция, редактировать ее
+        if (instructionId) {
+            setTimeout(() => {
+                this.editInstruction(instructionId);
+            }, 100); // Небольшая задержка для рендера
+        }
     }
 
     renderInstructions(groupId) {
@@ -142,6 +160,11 @@ export class UIManager {
                     <p class="instruction-meta">Создано: ${date} | Шагов: ${instruction.steps.length}</p>
                 </div>
                 <div class="instruction-actions">
+                    <button class="favorite-btn ${instruction.favorite ? 'favorite' : ''}" data-id="${instruction.id}" title="${instruction.favorite ? 'Убрать из избранного' : 'Добавить в избранное'}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="${instruction.favorite ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </button>
                     <button class="edit-instruction" data-id="${instruction.id}">Редактировать</button>
                     <button class="delete-instruction" data-id="${instruction.id}">Удалить</button>
                 </div>
@@ -254,6 +277,44 @@ export class UIManager {
             if (this.currentGroupId) {
                 this.renderInstructions(this.currentGroupId);
             }
+        }
+    }
+
+    toggleFavorite(id) {
+        this.storage.toggleFavorite(id);
+        // Обновить рендер, но чтобы не перерисовывать все, просто обновить кнопку
+        const btn = document.querySelector(`.favorite-btn[data-id="${id}"]`);
+        if (btn) {
+            const instruction = this.storage.getInstruction(id);
+            const isFavorite = instruction.favorite;
+            btn.classList.toggle('favorite', isFavorite);
+            btn.setAttribute('title', isFavorite ? 'Убрать из избранного' : 'Добавить в избранное');
+            const svg = btn.querySelector('svg');
+            svg.setAttribute('fill', isFavorite ? 'currentColor' : 'none');
+        }
+        // Обновить welcome screen если нужно
+        this.updateWelcomeScreen();
+    }
+
+    updateWelcomeScreen() {
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const favoriteInstructions = this.storage.getFavoriteInstructions();
+
+        if (favoriteInstructions.length > 0) {
+            let html = '<h2>Избранные инструкции</h2><ul class="favorites-list">';
+            favoriteInstructions.forEach(inst => {
+                const group = this.storage.getGroups().find(g => g.id === inst.groupId);
+                const groupName = group ? group.name : 'Неизвестная группа';
+                html += `<li class="favorite-item">
+                    <a href="#" onclick="selectFavorite(${inst.id}); return false;">
+                        <strong>${inst.title}</strong> (${groupName})
+                    </a>
+                </li>`;
+            });
+            html += '</ul><p>Или выберите группу слева, чтобы начать работу с инструкциями.</p>';
+            welcomeScreen.innerHTML = html;
+        } else {
+            welcomeScreen.innerHTML = '<h2>Добро пожаловать!</h2><p>Выберите группу слева, чтобы начать работу с инструкциями.</p>';
         }
     }
 

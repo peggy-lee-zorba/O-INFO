@@ -23,7 +23,7 @@ class App {
 
         // Назначение обработчиков
         this.setupEventListeners();
-        
+
         // Демо-данные при первом запуске
         this.initDemoData();
     }
@@ -62,10 +62,33 @@ class App {
     showMainApp() {
         document.getElementById('login-page').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
-        
+
         // Инициализация UI
         this.ui.init();
         this.editor.init();
+        this.ui.updateWelcomeScreen(); // Чтобы показать избранные
+
+        // Добавить global functions
+        window.showHome = () => this.showHome();
+        window.selectFavorite = (id) => this.selectFavorite(id);
+    }
+
+    showHome() {
+        // Показать welcome screen
+        document.getElementById('welcome-screen').classList.remove('hidden');
+        document.getElementById('instructions-view').classList.add('hidden');
+        document.getElementById('editor-view').classList.add('hidden');
+        // Сбросить выбранную группу
+        document.querySelectorAll('.group-item').forEach(item => item.classList.remove('active'));
+        this.ui.currentGroupId = null;
+    }
+
+    selectFavorite(id) {
+        const instruction = this.storage.getInstruction(id);
+        if (instruction) {
+            const groupId = instruction.groupId;
+            this.ui.selectGroup(groupId, id);
+        }
     }
 
     initDemoData() {
