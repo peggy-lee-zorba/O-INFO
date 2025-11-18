@@ -358,6 +358,11 @@ body {
     font-size: 24px;
 }
 
+.view-header button {
+    width: fit-content;
+    align-self: center;
+}
+
 .instructions-list {
     list-style: none;
 }
