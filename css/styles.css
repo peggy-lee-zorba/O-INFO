@@ -38,7 +38,7 @@ body {
 /* ====== Адаптивные сетки ====== */
 .app-container {
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto 1fr auto;
     height: 100vh;
     overflow: hidden;
 }
@@ -540,6 +540,16 @@ body {
     gap: 12px;
     justify-content: flex-end;
     margin-top: 24px;
+}
+
+/* ====== Footer ====== */
+.app-footer {
+    background: var(--header-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 12px 24px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
 }
 
 /* ====== Адаптивность ====== */
