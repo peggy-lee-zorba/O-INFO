@@ -1,0 +1,105 @@
+import { AuthManager } from './auth.js';
+import { Storage } from './storage.js';
+import { UIManager } from './ui.js';
+import { EditorManager } from './editor.js';
+
+class App {
+    constructor() {
+        this.auth = new AuthManager();
+        this.storage = new Storage();
+        this.ui = new UIManager(this.storage);
+        this.editor = new EditorManager(this.storage);
+        
+        this.init();
+    }
+
+    init() {
+        // Инициализация приложения
+        if (this.auth.isAuthenticated()) {
+            this.showMainApp();
+        } else {
+            this.showLogin();
+        }
+
+        // Назначение обработчиков
+        this.setupEventListeners();
+        
+        // Демо-данные при первом запуске
+        this.initDemoData();
+    }
+
+    setupEventListeners() {
+        // Обработка аутентификации
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+            
+            if (this.auth.login(login, password)) {
+                this.showMainApp();
+            } else {
+                document.getElementById('login-error').textContent = 'Неверный логин или пароль';
+            }
+        });
+
+        // Выход
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            this.auth.logout();
+            this.showLogin();
+        });
+
+        // Переключение меню (мобильные)
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+    }
+
+    showLogin() {
+        document.getElementById('login-page').classList.remove('hidden');
+        document.getElementById('main-app').classList.add('hidden');
+    }
+
+    showMainApp() {
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        
+        // Инициализация UI
+        this.ui.init();
+        this.editor.init();
+    }
+
+    initDemoData() {
+        const hasData = this.storage.getGroups().length > 0;
+        
+        if (!hasData) {
+            // Демо-группы
+            const mailGroup = this.storage.addGroup('Почта');
+            const utilitiesGroup = this.storage.addGroup('ЖКХ');
+            const shopsGroup = this.storage.addGroup('Магазины');
+
+            // Демо-инструкции
+            this.storage.addInstruction(mailGroup.id, {
+                title: 'Как настроить почтовый клиент',
+                steps: [
+                    { content: 'Откройте настройки почтового клиента', image: null },
+                    { content: 'Введите адрес сервера: mail.example.com', image: null }
+                ],
+                createdAt: new Date().toISOString()
+            });
+
+            this.storage.addInstruction(utilitiesGroup.id, {
+                title: 'Оплата коммунальных услуг',
+                steps: [
+                    { content: 'Войдите в личный кабинет', image: null },
+                    { content: 'Выберите раздел "Коммунальные услуги"', image: null }
+                ],
+                createdAt: new Date().toISOString()
+            });
+        }
+    }
+}
+
+// Запуск приложения
+document.addEventListener('DOMContentLoaded', () => {
+    new App();
+});
