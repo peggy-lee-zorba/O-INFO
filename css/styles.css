@@ -396,7 +396,7 @@ body {
 
 .instruction-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .instruction-actions button {
@@ -415,6 +415,49 @@ body {
 .delete-btn {
     background: var(--danger-color);
     color: white;
+}
+
+.favorite-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 6px;
+    font-size: 12px;
+}
+
+.favorite-btn:hover {
+    background: #f8fafc;
+    border-color: var(--secondary-color);
+}
+
+.favorite-btn.favorite {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    color: #92400e;
+}
+
+.favorite-btn.favorite:hover {
+    background: #fde68a;
+}
+
+.edit-instruction {
+    background: var(--primary-color);
+    color: white;
+    font-size: 12px;
+}
+
+.edit-instruction:hover {
+    background: var(--primary-hover);
+}
+
+.delete-instruction {
+    background: var(--danger-color);
+    color: white;
+    font-size: 12px;
+}
+
+.delete-instruction:hover {
+    background: var(--danger-hover);
 }
 
 /* Editor View */
@@ -566,6 +609,13 @@ body {
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     transition: var(--transition);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.favorite-info {
+    flex: 1;
 }
 
 .favorite-item:hover {

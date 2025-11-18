@@ -31,6 +31,24 @@ export class UIManager {
             this.showEditor();
         });
 
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.edit-instruction')) {
+                e.stopPropagation();
+                const btn = e.target.closest('.edit-instruction');
+                const id = btn.dataset.id;
+                this.editInstruction(id);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-instruction')) {
+                e.stopPropagation();
+                const btn = e.target.closest('.delete-instruction');
+                const id = btn.dataset.id;
+                this.confirmDelete('instruction', id);
+            }
+        });
+
         document.getElementById('back-to-list').addEventListener('click', () => {
             this.showInstructionsList();
         });
@@ -172,21 +190,6 @@ export class UIManager {
             
             instructionsList.appendChild(li);
         });
-
-        // Обработчики
-        document.querySelectorAll('.edit-instruction').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.dataset.id;
-                this.editInstruction(id);
-            });
-        });
-
-        document.querySelectorAll('.delete-instruction').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.dataset.id;
-                this.confirmDelete('instruction', id);
-            });
-        });
     }
 
     showInstructionsList() {
@@ -306,9 +309,20 @@ export class UIManager {
                 const group = this.storage.getGroups().find(g => g.id === inst.groupId);
                 const groupName = group ? group.name : 'Неизвестная группа';
                 html += `<li class="favorite-item">
-                    <a href="#" onclick="selectFavorite(${inst.id}); return false;">
-                        <strong>${inst.title}</strong> (${groupName})
-                    </a>
+                    <div class="favorite-info">
+                        <a href="#" onclick="selectFavorite(${inst.id}); return false;">
+                            <strong>${inst.title}</strong> (${groupName})
+                        </a>
+                    </div>
+                    <div class="instruction-actions">
+                        <button class="favorite-btn favorite" data-id="${inst.id}" title="Убрать из избранного">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </button>
+                        <button class="edit-instruction" data-id="${inst.id}">Редактировать</button>
+                        <button class="delete-instruction" data-id="${inst.id}">Удалить</button>
+                    </div>
                 </li>`;
             });
             html += '</ul><p>Или выберите группу слева, чтобы начать работу с инструкциями.</p>';
