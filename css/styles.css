@@ -432,6 +432,11 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
+.editor-header button {
+    width: fit-content;
+    align-self: center;
+}
+
 .instruction-form {
     background: var(--card-bg);
     padding: 24px;
