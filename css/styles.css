@@ -547,11 +547,11 @@ body {
     .main-content {
         padding: 16px;
     }
-    
+
     .view-header {
         flex-direction: column;
         gap: 16px;
-        align-items: stretch;
+        align-items: center;
     }
     
     .instruction-item {
