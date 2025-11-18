@@ -9,6 +9,15 @@ export class UIManager {
         this.renderGroups();
         this.setupEventListeners();
         this.updateWelcomeScreen();
+
+        // Слушатель обновления инструкций
+        document.addEventListener('instructionsUpdated', (e) => {
+            const { groupId } = e.detail;
+            if (this.currentGroupId === groupId) {
+                this.renderInstructions(groupId);
+            }
+            this.updateWelcomeScreen();
+        });
     }
 
     setupEventListeners() {
@@ -207,16 +216,12 @@ export class UIManager {
     editInstruction(id) {
         this.currentInstructionId = id;
         const instruction = this.storage.getInstruction(id);
-        
+
         if (instruction) {
             this.showEditor();
-            this.populateEditor(instruction);
+            const event = new CustomEvent('loadInstruction', { detail: { instruction } });
+            document.dispatchEvent(event);
         }
-    }
-
-    populateEditor(instruction) {
-        document.getElementById('instruction-title').value = instruction.title;
-        document.getElementById('editor-title').textContent = 'Редактирование инструкции';
     }
 
     showGroupModal(group = null) {

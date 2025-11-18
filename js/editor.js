@@ -8,6 +8,10 @@ export class EditorManager {
     init() {
         this.setupEventListeners();
         this.addStep(); // Добавить первый шаг по умолчанию
+
+        document.addEventListener('loadInstruction', (e) => {
+            this.loadInstruction(e.detail.instruction);
+        });
     }
 
     setupEventListeners() {
