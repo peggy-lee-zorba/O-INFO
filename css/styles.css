@@ -1,147 +1,94 @@
-/* Дизайн на основе предоставленного изображения */
+/* Обновленные стили на основе скриншота */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    background: #e8f5f0 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="2" cy="2" r="1" fill="%23d0d0d0" opacity="0.5"/></svg>') repeat;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Заголовок с зелёным баннером */
-header {
-    margin: 40px auto 0;
-    max-width: 900px;
-    width: 100%;
-    position: relative;
-}
-
+/* Header Banner */
 .header-banner {
     background: linear-gradient(135deg, #5fb89d 0%, #7dc9b4 100%);
-    padding: 40px 60px;
-    position: relative;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-.header-banner::before,
-.header-banner::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: 80px;
-    height: 100%;
-    background: linear-gradient(135deg, #2d7a65 0%, #3d8a75 100%);
-    clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-
-.header-banner::before {
-    left: -60px;
-}
-
-.header-banner::after {
-    right: -60px;
-    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+    padding: 40px 20px;
+    text-align: center;
+    color: white;
+    margin-bottom: 0;
 }
 
 .header-banner h1 {
-    color: white;
-    font-size: 3em;
+    font-size: 2.5em;
+    margin-bottom: 10px;
     font-weight: bold;
-    text-align: center;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    letter-spacing: 2px;
-    margin: 0;
-    position: relative;
-    z-index: 1;
 }
 
-.header-banner::before {
-    content: '';
-    position: absolute;
-    top: 20px;
-    left: 60px;
-    right: 60px;
-    height: 3px;
-    background: white;
-    opacity: 0.8;
+.header-subtitle {
+    font-size: 1.2em;
+    opacity: 0.9;
 }
 
-.header-banner::after {
-    content: '';
-    position: absolute;
-    bottom: 20px;
-    left: 60px;
-    right: 60px;
-    height: 3px;
-    background: white;
-    opacity: 0.8;
-    clip-path: none;
-}
-
-/* Навигация */
-nav {
-    background: linear-gradient(135deg, #e85d75 0%, #f07489 100%);
+/* Main Navigation */
+.main-nav {
+    background: #f8f9fa;
     padding: 15px 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-top: 20px;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-nav ul {
+.main-nav ul {
     list-style: none;
     display: flex;
     justify-content: center;
-    gap: 50px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.2em;
-    font-weight: bold;
-    padding: 10px 20px;
-    transition: all 0.3s ease;
-    border-radius: 5px;
-}
-
-nav a:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-/* Основной контент */
-main {
-    flex: 1;
+    gap: 30px;
     max-width: 1200px;
-    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.main-nav a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+    background: #5fb89d;
+    color: white;
+}
+
+/* Main Content */
+.main-content {
+    max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
 }
 
-/* Сетка карточек */
-.instructions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
-    margin: 40px 0;
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e85d75;
 }
 
-/* Карточки инструкций */
+.content-header h2 {
+    color: #2d7a65;
+    margin: 0;
+}
+
+/* Instructions Grid */
+.instructions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
 .instruction-card {
     background: white;
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
     cursor: pointer;
+    border: 1px solid #e0e0e0;
 }
 
 .instruction-card:hover {
@@ -149,240 +96,73 @@ main {
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
-.instruction-card img {
+.card-image {
     width: 100%;
     height: 200px;
-    object-fit: cover;
-}
-
-.instruction-card-content {
-    padding: 25px;
-}
-
-.instruction-card h2 {
-    color: #2d7a65;
-    font-size: 1.5em;
-    margin-bottom: 15px;
-    font-weight: bold;
-}
-
-.instruction-card p {
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-.instruction-card .actions {
+    background: linear-gradient(135deg, #e85d75 0%, #f07489 100%);
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.instruction-card button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: all 0.3s ease;
-}
-
-.btn-view {
-    background: #5fb89d;
-    color: white;
-}
-
-.btn-view:hover {
-    background: #4da087;
-}
-
-.btn-delete {
-    background: #e85d75;
-    color: white;
-}
-
-.btn-delete:hover {
-    background: #d44a64;
-}
-
-/* Формы */
-.form-container {
-    background: white;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    color: #2d7a65;
-    font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 1.1em;
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #d0e8e0;
-    border-radius: 5px;
-    font-size: 1em;
-    transition: border-color 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #5fb89d;
-}
-
-.form-group textarea {
-    min-height: 400px;
-    font-family: monospace;
-    resize: vertical;
-}
-
-/* Кнопки */
-.btn-primary {
-    background: linear-gradient(135deg, #5fb89d 0%, #7dc9b4 100%);
-    color: white;
-    padding: 12px 30px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(95, 184, 157, 0.4);
-}
-
-.btn-secondary {
-    background: #f5f5f5;
-    color: #333;
-    padding: 12px 30px;
-    border: 2px solid #ddd;
-    border-radius: 5px;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-    background: #e0e0e0;
-    border-color: #ccc;
-}
-
-/* Подвал */
-footer {
-    background: white;
-    padding: 20px;
-    text-align: center;
-    color: #666;
-    margin-top: 40px;
-    border-top: 3px solid #e85d75;
-}
-
-/* Список инструкций */
-.instructions-list {
-    list-style: none;
-    padding: 0;
-}
-
-.instruction-item {
-    background: white;
-    border-radius: 10px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-}
-
-.instruction-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.instruction-item h3 {
-    color: #2d7a65;
-    font-size: 1.4em;
-    margin-bottom: 10px;
-}
-
-.instruction-item .instruction-content {
-    color: #666;
-    line-height: 1.8;
-    margin: 15px 0;
-}
-
-.instruction-item .instruction-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-/* Модальные окна */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
     align-items: center;
     justify-content: center;
+    color: white;
+    font-size: 3em;
 }
 
-.modal.active {
+.card-content {
+    padding: 25px;
+}
+
+.card-content h3 {
+    color: #2d7a65;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+}
+
+.card-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.card-meta {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
 }
 
-.modal-content {
-    background: white;
-    border-radius: 10px;
-    padding: 30px;
-    max-width: 500px;
-    width: 90%;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    animation: modalSlide 0.3s ease;
+.card-actions {
+    display: flex;
+    gap: 10px;
 }
 
-@keyframes modalSlide {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+/* Кнопка добавления группы */
+.add-group-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #e85d75;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(232, 93, 117, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.add-group-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(232, 93, 117, 0.5);
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .header-banner h1 {
-        font-size: 2em;
-        padding: 20px;
-    }
-    
-    .header-banner::before,
-    .header-banner::after {
-        width: 40px;
-    }
-    
-    nav ul {
+    .main-nav ul {
         flex-direction: column;
         gap: 10px;
     }
@@ -390,303 +170,10 @@ footer {
     .instructions-grid {
         grid-template-columns: 1fr;
     }
-}
-
-/* Скрытые элементы */
-.hidden {
-    display: none !important;
-}
-
-/* Шаги инструкций в списке */
-.instruction-steps {
-    counter-reset: step-counter;
-    list-style: none;
-    padding: 0;
-}
-
-.instruction-step {
-    counter-increment: step-counter;
-    margin-bottom: 15px;
-    padding: 10px;
-    border-left: 4px solid #5fb89d;
-    background: #f9f9f9;
-    padding-left: 20px;
-}
-
-.instruction-step:before {
-    content: counter(step-counter);
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    background: #5fb89d;
-    color: white;
-    text-align: center;
-    line-height: 25px;
-    border-radius: 50%;
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.instruction-step .step-content {
-    margin-bottom: 10px;
-}
-
-.instruction-step .step-image {
-    margin-top: 10px;
-}
-
-.instruction-step .step-image img {
-    max-width: 300px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* Контейнер шагов в редакторе */
-.steps-container {
-    margin-top: 20px;
-}
-
-.steps-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.steps-header h3 {
-    color: #2d7a65;
-    margin: 0;
-}
-
-.steps-list {
-    border: 1px solid #d0d0d0;
-    border-radius: 5px;
-    min-height: 200px;
-}
-
-/* Элемент шага */
-.step-item {
-    border-bottom: 1px solid #e0e0e0;
-    padding: 15px;
-}
-
-.step-item:last-child {
-    border-bottom: none;
-}
-
-.step-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.step-number {
-    font-weight: bold;
-    color: #2d7a65;
-}
-
-.step-actions {
-    display: flex;
-    gap: 5px;
-}
-
-.step-actions button {
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 5px 8px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #666;
-    transition: all 0.2s ease;
-}
-
-.step-actions button:hover {
-    background: #f0f0f0;
-    border-color: #999;
-}
-
-/* Редактор шага */
-.step-editor {
-    background: #fafafa;
-    border-radius: 5px;
-    padding: 10px;
-}
-
-.format-toolbar {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 10px;
-}
-
-.format-toolbar button {
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 14px;
-    min-width: 32px;
-    transition: all 0.2s ease;
-}
-
-.format-toolbar button:hover {
-    background: #f0f0f0;
-}
-
-.format-toolbar .image-btn {
-    background: #5fb89d;
-    color: white;
-    border-color: #5fb89d;
-}
-
-.format-toolbar .image-btn:hover {
-    background: #4da087;
-}
-
-.step-content {
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 10px;
-    min-height: 80px;
-    font-family: 'Arial', sans-serif;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-.step-content:focus {
-    outline: 2px solid #5fb89d;
-}
-
-.step-content code {
-    background: #f0f0f0;
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-family: monospace;
-}
-
-/* Превью изображения */
-.step-image-preview {
-    margin-top: 10px;
-    position: relative;
-    display: inline-block;
-}
-
-.step-image-preview img {
-    max-width: 200px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.step-image-preview .remove-image {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #e85d75;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Боковая панель */
-.sidebar {
-    background: white;
-    border-right: 3px solid #e85d75;
-    padding: 20px;
-    min-height: 100vh;
-}
-
-.sidebar h2 {
-    color: #2d7a65;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #5fb89d;
-}
-
-.groups-list {
-    list-style: none;
-}
-
-.group-item {
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: #f5f5f5;
-}
-
-.group-item:hover {
-    background: #e0f5ef;
-    transform: translateX(5px);
-}
-
-.group-item.active {
-    background: linear-gradient(135deg, #5fb89d 0%, #7dc9b4 100%);
-    color: white;
-}
-
-/* Кнопка добавления */
-.add-btn {
-    background: #e85d75;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(232, 93, 117, 0.3);
-    transition: all 0.3s ease;
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-}
-
-.add-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(232, 93, 117, 0.5);
-}
-
-/* Контейнер приложения */
-.app-container {
-    display: grid;
-    grid-template-columns: 250px 1fr;
-    min-height: 100vh;
-}
-
-/* Просмотр инструкции */
-.instruction-view {
-    background: white;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.instruction-view h1 {
-    color: #2d7a65;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 3px solid #e85d75;
-}
-
-.instruction-view .content {
-    line-height: 1.8;
-    color: #333;
-}
-
-/* Кнопки действий */
-.action-buttons {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
+    
+    .content-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
 }
