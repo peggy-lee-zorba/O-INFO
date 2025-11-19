@@ -1,6 +1,7 @@
 export class UIManager {
-    constructor(storage) {
+    constructor(storage, editor) {
         this.storage = storage;
+        this.editor = editor;
         this.currentGroupId = null;
         this.currentInstructionId = null;
     }
@@ -41,6 +42,12 @@ export class UIManager {
         });
 
         document.addEventListener('click', (e) => {
+            if (e.target.closest('.edit-instruction')) {
+                e.stopPropagation();
+                const btn = e.target.closest('.edit-instruction');
+                const id = btn.dataset.id;
+                this.showEditor(id);
+            }
             if (e.target.closest('.delete-instruction')) {
                 e.stopPropagation();
                 const btn = e.target.closest('.delete-instruction');
@@ -172,6 +179,7 @@ export class UIManager {
                     <div class="instruction-content">${instruction.html}</div>
                 </div>
                 <div class="instruction-actions">
+                    <button class="edit-instruction" data-id="${instruction.id}" title="Редактировать">✏️</button>
                     <button class="favorite-btn ${instruction.favorite ? 'favorite' : ''}" data-id="${instruction.id}" title="${instruction.favorite ? 'Убрать из избранного' : 'Добавить в избранное'}">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="${instruction.favorite ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -191,7 +199,8 @@ export class UIManager {
         document.getElementById('editor-view').classList.add('hidden');
     }
 
-    showEditor() {
+    showEditor(instructionId = null) {
+        this.editor.showEditor(instructionId);
         document.getElementById('welcome-screen').classList.add('hidden');
         document.getElementById('instructions-view').classList.add('hidden');
         document.getElementById('editor-view').classList.remove('hidden');

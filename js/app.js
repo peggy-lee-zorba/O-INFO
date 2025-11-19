@@ -7,7 +7,7 @@ class App {
     constructor() {
         this.auth = new AuthManager();
         this.storage = new Storage();
-        this.ui = new UIManager(this.storage);
+        this.ui = new UIManager(this.storage, this.editor);
         this.editor = new EditorManager(this.storage);
         
         this.init();
@@ -34,7 +34,7 @@ class App {
             e.preventDefault();
             const login = document.getElementById('login').value;
             const password = document.getElementById('password').value;
-            
+
             if (this.auth.login(login, password)) {
                 this.showMainApp();
             } else {
@@ -103,12 +103,20 @@ class App {
             // Демо-инструкции
             this.storage.addInstruction(mailGroup.id, {
                 title: 'Как настроить почтовый клиент',
-                html: '<h2>Настройка почтового клиента</h2><ol><li>Откройте настройки почтового клиента</li><li>Введите адрес сервера: mail.example.com</li></ol>'
+                steps: [
+                    { content: '<p>Откройте настройки почтового клиента в вашей программе.</p>' },
+                    { content: '<p>Введите адрес сервера: <code>mail.example.com</code></p>' },
+                    { content: '<p>Укажите порт 587 для SMTP.</p>' }
+                ]
             });
 
             this.storage.addInstruction(utilitiesGroup.id, {
                 title: 'Оплата коммунальных услуг',
-                html: '<h2>Оплата ЖКХ</h2><ol><li>Войдите в личный кабинет</li><li>Выберите раздел "Коммунальные услуги"</li></ol>'
+                steps: [
+                    { content: '<p>Войдите в личный кабинет на сайте вашей управляющей компании.</p>' },
+                    { content: '<p>Выберите раздел "Коммунальные услуги".</p>' },
+                    { content: '<p>Следуйте инструкциям для оплаты.</p>' }
+                ]
             });
         }
     }

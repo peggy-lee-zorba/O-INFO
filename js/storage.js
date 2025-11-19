@@ -60,7 +60,8 @@ export class Storage {
             id: Date.now().toString(),
             groupId,
             title: instructionData.title,
-            html: instructionData.html,
+            steps: instructionData.steps || [],
+            html: instructionData.html || this.generateHtmlFromSteps(instructionData.steps || []),
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             favorite: false
@@ -97,5 +98,21 @@ export class Storage {
         const data = this.getData();
         data.instructions = data.instructions.filter(i => i.id !== id);
         this.saveData(data);
+    }
+
+    generateHtmlFromSteps(steps) {
+        if (!steps || steps.length === 0) return '';
+
+        let html = '<ol class="instruction-steps">';
+        steps.forEach((step, index) => {
+            html += `<li class="instruction-step">
+                <div class="step-content">${step.content || ''}</div>`;
+            if (step.image) {
+                html += `<div class="step-image"><img src="${step.image}" alt="Шаг ${index + 1}" /></div>`;
+            }
+            html += '</li>';
+        });
+        html += '</ol>';
+        return html;
     }
 }
