@@ -41,15 +41,6 @@ export class UIManager {
         });
 
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.edit-instruction')) {
-                e.stopPropagation();
-                const btn = e.target.closest('.edit-instruction');
-                const id = btn.dataset.id;
-                this.editInstruction(id);
-            }
-        });
-
-        document.addEventListener('click', (e) => {
             if (e.target.closest('.delete-instruction')) {
                 e.stopPropagation();
                 const btn = e.target.closest('.delete-instruction');
@@ -135,7 +126,7 @@ export class UIManager {
         });
     }
 
-    selectGroup(groupId, instructionId = null) {
+    selectGroup(groupId) {
         this.currentGroupId = groupId;
 
         // Обновить активное состояние
@@ -155,13 +146,6 @@ export class UIManager {
         // Обновить заголовок
         const group = this.storage.getGroups().find(g => g.id === groupId);
         document.getElementById('current-group-title').textContent = group.name;
-
-        // Если указана инструкция, редактировать ее
-        if (instructionId) {
-            setTimeout(() => {
-                this.editInstruction(instructionId);
-            }, 100); // Небольшая задержка для рендера
-        }
     }
 
     renderInstructions(groupId) {
@@ -178,13 +162,14 @@ export class UIManager {
         instructions.forEach(instruction => {
             const li = document.createElement('li');
             li.className = 'instruction-item';
-            
+
             const date = new Date(instruction.createdAt).toLocaleDateString('ru-RU');
-            
+
             li.innerHTML = `
                 <div class="instruction-info">
                     <h3>${instruction.title}</h3>
-                    <p class="instruction-meta">Создано: ${date} | Шагов: ${instruction.steps.length}</p>
+                    <p class="instruction-meta">Создано: ${date}</p>
+                    <div class="instruction-content">${instruction.html}</div>
                 </div>
                 <div class="instruction-actions">
                     <button class="favorite-btn ${instruction.favorite ? 'favorite' : ''}" data-id="${instruction.id}" title="${instruction.favorite ? 'Убрать из избранного' : 'Добавить в избранное'}">
@@ -192,11 +177,10 @@ export class UIManager {
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                         </svg>
                     </button>
-                    <button class="edit-instruction" data-id="${instruction.id}">Редактировать</button>
                     <button class="delete-instruction" data-id="${instruction.id}">Удалить</button>
                 </div>
             `;
-            
+
             instructionsList.appendChild(li);
         });
     }
@@ -211,17 +195,6 @@ export class UIManager {
         document.getElementById('welcome-screen').classList.add('hidden');
         document.getElementById('instructions-view').classList.add('hidden');
         document.getElementById('editor-view').classList.remove('hidden');
-    }
-
-    editInstruction(id) {
-        this.currentInstructionId = id;
-        const instruction = this.storage.getInstruction(id);
-
-        if (instruction) {
-            this.showEditor();
-            const event = new CustomEvent('loadInstruction', { detail: { instruction } });
-            document.dispatchEvent(event);
-        }
     }
 
     showGroupModal(group = null) {
@@ -325,7 +298,6 @@ export class UIManager {
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                             </svg>
                         </button>
-                        <button class="edit-instruction" data-id="${inst.id}">Редактировать</button>
                         <button class="delete-instruction" data-id="${inst.id}">Удалить</button>
                     </div>
                 </li>`;

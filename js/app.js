@@ -87,7 +87,7 @@ class App {
         const instruction = this.storage.getInstruction(id);
         if (instruction) {
             const groupId = instruction.groupId;
-            this.ui.selectGroup(groupId, id);
+            this.ui.selectGroup(groupId);
         }
     }
 
@@ -103,20 +103,12 @@ class App {
             // Демо-инструкции
             this.storage.addInstruction(mailGroup.id, {
                 title: 'Как настроить почтовый клиент',
-                steps: [
-                    { content: 'Откройте настройки почтового клиента', image: null },
-                    { content: 'Введите адрес сервера: mail.example.com', image: null }
-                ],
-                createdAt: new Date().toISOString()
+                html: '<h2>Настройка почтового клиента</h2><ol><li>Откройте настройки почтового клиента</li><li>Введите адрес сервера: mail.example.com</li></ol>'
             });
 
             this.storage.addInstruction(utilitiesGroup.id, {
                 title: 'Оплата коммунальных услуг',
-                steps: [
-                    { content: 'Войдите в личный кабинет', image: null },
-                    { content: 'Выберите раздел "Коммунальные услуги"', image: null }
-                ],
-                createdAt: new Date().toISOString()
+                html: '<h2>Оплата ЖКХ</h2><ol><li>Войдите в личный кабинет</li><li>Выберите раздел "Коммунальные услуги"</li></ol>'
             });
         }
     }

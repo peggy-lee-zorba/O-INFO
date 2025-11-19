@@ -60,7 +60,7 @@ export class Storage {
             id: Date.now().toString(),
             groupId,
             title: instructionData.title,
-            steps: instructionData.steps,
+            html: instructionData.html,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             favorite: false
