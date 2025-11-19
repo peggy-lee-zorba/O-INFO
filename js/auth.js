@@ -11,10 +11,15 @@ export class AuthManager {
     }
 
     login(login, password) {
+        console.log('Attempting login with:', login, password); // Для отладки
+        console.log('Expected credentials:', this.credentials.login, this.credentials.password);
+
         if (login === this.credentials.login && password === this.credentials.password) {
             localStorage.setItem('auth_token', 'authenticated');
+            console.log('Login successful');
             return true;
         }
+        console.log('Login failed');
         return false;
     }
 
