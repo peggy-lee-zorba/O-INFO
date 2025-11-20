@@ -1,742 +1,204 @@
-/* Основное приложение с sidebar */
-.app-container {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    min-height: 100vh;
-    background: #f8f9fa;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.app-header {
-    background: white;
-    padding: 20px 30px;
-    border-bottom: 1px solid #dee2e6;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+body {
+  background: #f5f7fa;
+  color: #333;
 }
 
-.app-header h1 {
-    color: #2d7a65;
-    font-size: 1.5em;
-    margin: 0;
+/* Логин */
+.login-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #eef2f7;
 }
 
-.logout-btn {
-    background: #e85d75;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+.login-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  width: 320px;
+  text-align: center;
 }
 
-.logout-btn:hover {
-    background: #d44a64;
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
 }
 
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    cursor: pointer;
-    color: #2d7a65;
+.login-form button {
+  width: 100%;
+  padding: 12px;
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.app-body {
-    display: flex;
-    flex: 1;
+.error {
+  color: #e53e3e;
+  margin-top: 10px;
 }
 
-/* Sidebar */
+/* Основной интерфейс */
+.hidden {
+  display: none !important;
+}
+
+#main-app {
+  display: flex;
+  height: 100vh;
+}
+
 .sidebar {
-    background: white;
-    border-right: 1px solid #dee2e6;
-    padding: 30px 20px;
-    overflow-y: auto;
+  width: 240px;
+  background: #2d3748;
+  color: white;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.sidebar h2 {
-    color: #2d7a65;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #5fb89d;
-    font-size: 1.2em;
+.group-list .group-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.groups-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.group-item:hover, .group-item.active {
+  background: #4a5568;
 }
 
-.group-item {
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: #f8f9fa;
-    border: 1px solid transparent;
+.btn-add {
+  margin-top: auto;
+  padding: 10px 20px;
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin: 20px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-.group-item:hover {
-    background: #e9ecef;
-}
-
-.group-item.active {
-    background: #5fb89d;
-    color: white;
-    border-color: #4a967e;
-}
-
-.group-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.group-actions button {
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 4px 8px;
-    cursor: pointer;
-    font-size: 12px;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-}
-
-.group-actions button:hover {
-    opacity: 1;
-}
-
-/* Main Content */
 .main-content {
-    flex: 1;
-    padding: 30px;
-    background: #f8f9fa;
-    overflow-y: auto;
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
 }
 
-/* Welcome screen */
-.welcome-screen {
-    background: white;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    text-align: center;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.welcome-screen h2 {
-    color: #2d7a65;
-    margin-bottom: 20px;
-}
-
-/* Instructions view */
-.instructions-view {
-    background: white;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.view-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #e85d75;
-}
-
-.view-header h2 {
-    color: #2d7a65;
-    margin: 0;
-}
-
-.instructions-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.instruction-item {
-    background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 25px;
-    margin-bottom: 20px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+.instructions-list .instruction-item {
+  background: white;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
 .instruction-item:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-color: #5fb89d;
-}
-
-.instruction-item h3 {
-    color: #2d7a65;
-    margin-bottom: 10px;
-    font-size: 1.4em;
-}
-
-.instruction-item .instruction-meta {
-    color: #6c757d;
-    font-size: 0.9em;
-    margin-bottom: 15px;
-}
-
-.instruction-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-    align-items: center;
-}
-
-.instruction-actions button {
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-}
-
-.instruction-actions .favorite-btn {
-    background: #fff3cd;
-    border-color: #ffeeba;
-}
-
-.instruction-actions .favorite-btn.favorite {
-    background: #f8d7da;
-    border-color: #f5c6cb;
-}
-
-/* Скрытые элементы */
-.hidden {
-    display: none !important;
-}
-
-/* Шаги инструкций в списке */
-.instruction-steps {
-    counter-reset: step-counter;
-    list-style: none;
-    padding: 0;
-}
-
-.instruction-step {
-    counter-increment: step-counter;
-    margin-bottom: 15px;
-    padding: 15px;
-    border-left: 4px solid #5fb89d;
-    background: #f9f9f9;
-    border-radius: 5px;
-}
-
-.instruction-step:before {
-    content: counter(step-counter);
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    background: #5fb89d;
-    color: white;
-    text-align: center;
-    line-height: 30px;
-    border-radius: 50%;
-    font-weight: bold;
-    margin-right: 15px;
-    font-size: 14px;
-}
-
-.instruction-step .step-content {
-    margin-bottom: 10px;
-    line-height: 1.6;
-}
-
-.instruction-step .step-content p:first-child {
-    margin-top: 0;
-}
-
-.instruction-step .step-image {
-    margin-top: 15px;
-}
-
-.instruction-step .step-image img {
-    max-width: 100%;
-    max-height: 300px;
-    border-radius: 5px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-/* Контейнер шагов в редакторе */
-.steps-container {
-    margin-top: 20px;
-}
-
-.steps-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e0e0e0;
-}
-
-.steps-header h3 {
-    color: #2d7a65;
-    margin: 0;
-    font-size: 1.3em;
-}
-
-.steps-list {
-    border: 1px solid #d0d0d0;
-    border-radius: 8px;
-    min-height: 250px;
-    background: #fafafa;
-}
-
-/* Элемент шага */
-.step-item {
-    border-bottom: 1px solid #e0e0e0;
-    padding: 20px;
-}
-
-.step-item:last-child {
-    border-bottom: none;
-}
-
-.step-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.step-number {
-    font-weight: bold;
-    color: #2d7a65;
-    font-size: 1.1em;
-}
-
-.step-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.step-actions button {
-    background: #f8f9fa;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 6px 10px;
-    cursor: pointer;
-    font-size: 12px;
-    color: #666;
-    transition: all 0.2s ease;
-}
-
-.step-actions button:hover {
-    background: #e9ecef;
-    border-color: #999;
-}
-
-/* Редактор шага */
-.step-editor {
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 15px;
-}
-
-.format-toolbar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-}
-
-.format-toolbar button {
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 12px;
-    min-width: 35px;
-    transition: all 0.2s ease;
-    color: #333;
-}
-
-.format-toolbar button:hover {
-    background: #f8f9fa;
-    border-color: #999;
-}
-
-.format-toolbar .image-btn {
-    background: #5fb89d;
-    color: white;
-    border-color: #5fb89d;
-}
-
-.format-toolbar .image-btn:hover {
-    background: #4da087;
-}
-
-.step-content {
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 12px;
-    min-height: 100px;
-    font-family: 'Arial', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    resize: vertical;
-}
-
-.step-content:focus {
-    outline: none;
-    border-color: #5fb89d;
-    box-shadow: 0 0 0 2px rgba(95, 184, 157, 0.2);
-}
-
-.step-content code {
-    background: #f8f9fa;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-family: monospace;
-    font-size: 13px;
-}
-
-.step-content strong {
-    font-weight: bold;
-}
-
-.step-content em {
-    font-style: italic;
-}
-
-/* Превью изображения */
-.step-image-preview {
-    margin-top: 15px;
-    position: relative;
-    display: inline-block;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.step-image-preview img {
-    max-width: 100%;
-    max-height: 250px;
-    display: block;
-}
-
-.step-image-preview .remove-image {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: #e85d75;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    transition: all 0.2s ease;
-}
-
-.step-image-preview .remove-image:hover {
-    background: #d44a64;
-    transform: scale(1.1);
+  transform: translateY(-2px);
 }
 
 /* Модальные окна */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
-    background: white;
-    border-radius: 8px;
-    padding: 30px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-/* Иконки и дополнительные кнопки */
-.icon-btn {
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: #666;
+.modal-content.preview {
+  max-width: 800px;
 }
 
-.icon-btn:hover {
-    background: #f8f9fa;
-    border-color: #5fb89d;
-    color: #5fb89d;
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
-.btn-logout {
-    background: #e85d75;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-logout:hover {
-    background: #d44a64;
-}
-
-/* Формы и кнопки */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #2d7a65;
-    font-weight: 500;
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: border-color 0.2s ease;
-    box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #5fb89d;
-    box-shadow: 0 0 0 2px rgba(95, 184, 157, 0.2);
+.modal-content textarea {
+  height: 200px;
+  font-family: monospace;
 }
 
 .modal-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
+  margin-top: 16px;
+  text-align: right;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #5fb89d 0%, #7dc9b4 100%);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
+.modal-actions button {
+  margin-left: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(95, 184, 157, 0.3);
+.modal-actions button:first-child {
+  background: #4a6cf7;
+  color: white;
 }
 
-.btn-secondary {
-    background: #f8f9fa;
-    color: #343a40;
-    border: 1px solid #dee2e6;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+#close-preview-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
 }
 
-.btn-secondary:hover {
-    background: #e9ecef;
-}
-
-.btn-danger {
-    background: #e85d75;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-danger:hover {
-    background: #d34a67;
-    transform: translateY(-1px);
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .app-container {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        position: fixed;
-        left: -100%;
-        top: 0;
-        width: 280px;
-        height: 100vh !important;
-        transition: left 0.3s ease;
-        z-index: 1500;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-    }
-
-    .sidebar.open {
-        left: 0;
-    }
-
-    .menu-toggle {
-        display: block;
-    }
-
-    .app-body {
-        flex-direction: column;
-    }
-
-    .main-content {
-        margin-left: 0;
-        padding: 20px;
-    }
-
-    .app-header {
-        padding: 15px 20px;
-    }
-
-    .welcome-screen {
-        padding: 30px 20px;
-    }
-
-    .instructions-view {
-        padding: 20px;
-    }
-
-    .view-header {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-    }
-
-    .instruction-item {
-        padding: 20px;
-    }
-
-    .instruction-actions {
-        flex-direction: column;
-        gap: 8px;
-        align-items: stretch;
-    }
-
-    .editor-view {
-        padding: 20px;
-    }
-
-    .instruction-form {
-        gap: 20px;
-    }
-
-    /* Мобильные adaptations для шагов */
-    .step-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .step-actions {
-        align-self: flex-end;
-        width: 100%;
-        justify-content: flex-end;
-    }
-
-    .format-toolbar {
-        justify-content: center;
-    }
-
-    .step-content {
-        min-height: 80px;
-        padding: 10px;
-    }
-
-    .steps-list {
-        min-height: 200px;
-    }
-
-    .step-item {
-        padding: 15px;
-    }
-
-    .modal-content {
-        margin: 20px;
-        padding: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .app-header {
-        padding: 12px 15px;
-    }
-
-    .app-header h1 {
-        font-size: 1.3em;
-    }
-
-    .logout-btn {
-        padding: 6px 12px;
-        font-size: 14px;
-    }
-
-    .sidebar {
-        width: 250px;
-    }
-
-    .main-content {
-        padding: 15px;
-    }
-
-    .welcome-screen {
-        padding: 20px 15px;
-    }
-
-    .instructions-view {
-        padding: 15px;
-    }
-
-    .editor-view {
-        margin: 0;
-    }
-
-    .step-content {
-        font-size: 16px; /* предотвращает зум на iOS */
-    }
+#upload-html-btn {
+  width: 100%;
+  padding: 8px;
+  background: #e9ecef;
+  border: 1px dashed #adb5bd;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 8px 0;
+  color: #495057;
 }

@@ -1,118 +1,34 @@
-export class Storage {
-    constructor() {
-        this.storageKey = 'instruction_manager_data';
-    }
+const STORAGE_KEY = 'instructions_app_data';
 
-    getData() {
-        const data = localStorage.getItem(this.storageKey);
-        return data ? JSON.parse(data) : { groups: [], instructions: [] };
-    }
+function loadStorage() {
+  const data = localStorage.getItem(STORAGE_KEY);
+  return data ? JSON.parse(data) : getDefaultData();
+}
 
-    saveData(data) {
-        localStorage.setItem(this.storageKey, JSON.stringify(data));
-    }
+function saveStorage(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
 
-    // Группы
-    getGroups() {
-        return this.getData().groups;
-    }
-
-    addGroup(name) {
-        const data = this.getData();
-        const newGroup = {
-            id: Date.now().toString(),
-            name,
-            createdAt: new Date().toISOString()
-        };
-        data.groups.push(newGroup);
-        this.saveData(data);
-        return newGroup;
-    }
-
-    updateGroup(id, name) {
-        const data = this.getData();
-        const group = data.groups.find(g => g.id === id);
-        if (group) {
-            group.name = name;
-            this.saveData(data);
-        }
-    }
-
-    deleteGroup(id) {
-        const data = this.getData();
-        data.groups = data.groups.filter(g => g.id !== id);
-        data.instructions = data.instructions.filter(i => i.groupId !== id);
-        this.saveData(data);
-    }
-
-    // Инструкции
-    getInstructions(groupId) {
-        return this.getData().instructions.filter(i => i.groupId === groupId);
-    }
-
-    getInstruction(id) {
-        return this.getData().instructions.find(i => i.id === id);
-    }
-
-    addInstruction(groupId, instructionData) {
-        const data = this.getData();
-        const newInstruction = {
-            id: Date.now().toString(),
-            groupId,
-            title: instructionData.title,
-            steps: instructionData.steps || [],
-            html: instructionData.html || this.generateHtmlFromSteps(instructionData.steps || []),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            favorite: false
-        };
-        data.instructions.push(newInstruction);
-        this.saveData(data);
-        return newInstruction;
-    }
-
-    updateInstruction(id, instructionData) {
-        const data = this.getData();
-        const instruction = data.instructions.find(i => i.id === id);
-        if (instruction) {
-            Object.assign(instruction, instructionData);
-            instruction.updatedAt = new Date().toISOString();
-            this.saveData(data);
-        }
-    }
-
-    toggleFavorite(id) {
-        const data = this.getData();
-        const instruction = data.instructions.find(i => i.id === id);
-        if (instruction) {
-            instruction.favorite = !instruction.favorite;
-            this.saveData(data);
-        }
-    }
-
-    getFavoriteInstructions() {
-        return this.getData().instructions.filter(i => i.favorite);
-    }
-
-    deleteInstruction(id) {
-        const data = this.getData();
-        data.instructions = data.instructions.filter(i => i.id !== id);
-        this.saveData(data);
-    }
-
-    generateHtmlFromSteps(steps) {
-        if (!steps || steps.length === 0) return '';
-
-        let html = '<ol class="instruction-steps">';
-        steps.forEach((step, index) => {
-            html += `<li class="instruction-step">
-                <div class="step-content">${step.content || ''}</div>`;
-            if (step.image) {
-                html += `<div class="step-image"><img src="${step.image}" alt="Шаг ${index + 1}" /></div>`;
-            }
-            html += '</li>';
-        });
-        html += '</ol>';
-        return html;
-    }
+function getDefaultData() {
+  return {
+    groups: [
+      { id: 'mail', name: 'Почта' },
+      { id: 'jkh', name: 'ЖКХ' },
+      { id: 'shops', name: 'Магазины' }
+    ],
+    instructions: [
+      {
+        id: 'mail-1',
+        groupId: 'mail',
+        name: 'Как отправить письмо',
+        content: '<h2>Инструкция по отправке письма</h2><p>1. Напишите письмо...<br>2. Нажмите отправить.</p>'
+      },
+      {
+        id: 'jkh-1',
+        groupId: 'jkh',
+        name: 'Оплата ЖКХ',
+        content: '<h2>Как оплатить ЖКХ</h2><p>1. Зайдите в личный кабинет...<br>2. Нажмите "Оплатить".</p>'
+      }
+    ]
+  };
 }

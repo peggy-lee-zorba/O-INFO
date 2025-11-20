@@ -1,131 +1,58 @@
-import { AuthManager } from './auth.js';
-import { Storage } from './storage.js';
-import { UIManager } from './ui.js';
-import { EditorManager } from './editor.js';
+window.app = {
+  data: null,
+  activeGroupId: null,
 
-class App {
-    constructor() {
-        this.auth = new AuthManager();
-        this.storage = new Storage();
-        this.ui = new UIManager(this.storage, null); // временно null для editor
-        this.editor = new EditorManager(this.storage);
-        this.ui = new UIManager(this.storage, this.editor); // теперь с editor
+  init() {
+    this.data = loadStorage();
+    this.render();
+    this.bindEvents();
+  },
 
-        this.init();
+  bindEvents() {
+    // выбор группы и добавление инструкции обрабатываются в editor.js и ui.js
+  },
+
+  render() {
+    ui.renderGroups(this.data.groups, this.activeGroupId);
+    if (this.activeGroupId) {
+      const group = this.data.groups.find(g => g.id === this.activeGroupId);
+      document.getElementById('group-title').textContent = group ? group.name : 'Неизвестная группа';
+      const instructions = this.data.instructions.filter(i => i.groupId === this.activeGroupId);
+      ui.renderInstructions(instructions);
     }
+  },
 
-    init() {
-        // Инициализация приложения
-        if (this.auth.isAuthenticated()) {
-            this.showMainApp();
-        } else {
-            this.showLogin();
-        }
+  setActiveGroup(id) {
+    this.activeGroupId = id;
+    this.render();
+  },
 
-        // Назначение обработчиков
-        this.setupEventListeners();
+  addGroup(name) {
+    const newId = 'group-' + Date.now();
+    this.data.groups.push({ id: newId, name });
+    saveStorage(this.data);
+    this.render();
+  },
 
-        // Демо-данные при первом запуске
-        this.initDemoData();
+  addInstruction(name, content) {
+    const newId = 'instr-' + Date.now();
+    this.data.instructions.push({
+      id: newId,
+      groupId: this.activeGroupId,
+      name,
+      content
+    });
+    saveStorage(this.data);
+    this.render();
+  },
+
+  updateInstruction(id, name, content) {
+    const instr = this.data.instructions.find(i => i.id === id);
+    if (instr) {
+      instr.name = name;
+      instr.content = content;
+      saveStorage(this.data);
+      this.render();
     }
-
-    setupEventListeners() {
-        // Обработка аутентификации
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            console.log('Login form submitted'); // Для отладки
-            const login = document.getElementById('login').value;
-            const password = document.getElementById('password').value;
-            console.log('Form values:', login, password); // Для отладки
-
-            if (this.auth.login(login, password)) {
-                this.showMainApp();
-            } else {
-                console.log('Login failed, showing error'); // Для отладки
-                document.getElementById('login-error').textContent = 'Неверный логин или пароль';
-            }
-        });
-
-        // Выход
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            this.auth.logout();
-            this.showLogin();
-        });
-
-        // Переключение меню (мобильные)
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
-        });
-    }
-
-    showLogin() {
-        document.getElementById('login-page').classList.remove('hidden');
-        document.getElementById('main-app').classList.add('hidden');
-    }
-
-    showMainApp() {
-        document.getElementById('login-page').classList.add('hidden');
-        document.getElementById('main-app').classList.remove('hidden');
-
-        // Инициализация UI
-        this.ui.init();
-        this.editor.init();
-        this.ui.updateWelcomeScreen(); // Чтобы показать избранные
-
-        // Добавить global functions
-        window.showHome = () => this.showHome();
-        window.selectFavorite = (id) => this.selectFavorite(id);
-    }
-
-    showHome() {
-        document.getElementById('welcome-screen').classList.remove('hidden');
-        document.getElementById('instructions-view').classList.add('hidden');
-        document.getElementById('editor-view').classList.add('hidden');
-        // Сбросить выбранную группу
-        document.querySelectorAll('.group-item').forEach(item => item.classList.remove('active'));
-        this.ui.currentGroupId = null;
-    }
-
-    selectFavorite(id) {
-        const instruction = this.storage.getInstruction(id);
-        if (instruction) {
-            const groupId = instruction.groupId;
-            this.ui.selectGroup(groupId);
-        }
-    }
-
-    initDemoData() {
-        const hasData = this.storage.getGroups().length > 0;
-
-        if (!hasData) {
-            // Демо-группы
-            const mailGroup = this.storage.addGroup('Почта');
-            const utilitiesGroup = this.storage.addGroup('ЖКХ');
-            const shopsGroup = this.storage.addGroup('Магазины');
-
-            // Демо-инструкции
-            this.storage.addInstruction(mailGroup.id, {
-                title: 'Как настроить почтовый клиент',
-                steps: [
-                    { content: '<p>Откройте настройки почтового клиента в вашей программе.</p>' },
-                    { content: '<p>Введите адрес сервера: <code>mail.example.com</code></p>' },
-                    { content: '<p>Укажите порт 587 для SMTP.</p>' }
-                ]
-            });
-
-            this.storage.addInstruction(utilitiesGroup.id, {
-                title: 'Оплата коммунальных услуг',
-                steps: [
-                    { content: '<p>Войдите в личный кабинет на сайте вашей управляющей компании.</p>' },
-                    { content: '<p>Выберите раздел "Коммунальные услуги".</p>' },
-                    { content: '<p>Следуйте инструкциям для оплаты.</p>' }
-                ]
-            });
-        }
-    }
-}
-
-// Запуск приложения
-document.addEventListener('DOMContentLoaded', () => {
-    new App();
-});
+  }
+};

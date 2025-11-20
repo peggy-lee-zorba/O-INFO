@@ -1,90 +1,69 @@
-// В UIManager обновим renderGroups для работы с навигацией
-renderGroups() {
-    const navList = document.getElementById('groups-nav-list');
-    const groups = this.storage.getGroups();
-    
-    // Очищаем, оставляя только "Главная"
-    navList.innerHTML = '<li><a href="#" onclick="showHome(); return false;">Главная</a></li>';
-    
+const ui = {
+  renderGroups(groups, activeGroupId = null) {
+    const list = document.getElementById('group-list');
+    list.innerHTML = '';
     groups.forEach(group => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <a href="#" data-group-id="${group.id}">${group.name}</a>
-        `;
-        
-        li.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.selectGroup(group.id);
-        });
-        
-        navList.appendChild(li);
+      const el = document.createElement('div');
+      el.className = 'group-item' + (group.id === activeGroupId ? ' active' : '');
+      el.textContent = group.name;
+      el.dataset.id = group.id;
+      el.addEventListener('click', () => {
+        window.app.setActiveGroup(group.id);
+      });
+      list.appendChild(el);
     });
-}
+  },
 
-// Обновим selectGroup для работы с навигацией
-selectGroup(groupId) {
-    this.currentGroupId = groupId;
-
-    // Обновить активное состояние в навигации
-    document.querySelectorAll('#groups-nav-list a').forEach(link => {
-        link.classList.remove('active');
-    });
-
-    const selectedLink = document.querySelector(`[data-group-id="${groupId}"]`);
-    if (selectedLink) {
-        selectedLink.classList.add('active');
-    }
-
-    // Показать инструкции группы
-    this.renderInstructions(groupId);
-    this.showInstructionsGrid();
-
-    // Обновить заголовок
-    const group = this.storage.getGroups().find(g => g.id === groupId);
-    document.getElementById('content-title').textContent = group.name;
-}
-
-// Новый метод для отображения сетки инструкций
-renderInstructions(groupId) {
-    const grid = document.getElementById('instructions-grid');
-    const instructions = this.storage.getInstructions(groupId);
-    
-    grid.innerHTML = '';
-    
+  renderInstructions(instructions) {
+    const list = document.getElementById('instructions-list');
+    list.innerHTML = '';
     if (instructions.length === 0) {
-        grid.innerHTML = '<p class="empty-state">Нет инструкций. Создайте первую!</p>';
-        return;
+      list.innerHTML = '<p>Нет инструкций в этой группе</p>';
+      return;
     }
-    
-    instructions.forEach(instruction => {
-        const card = document.createElement('div');
-        card.className = 'instruction-card';
-        
-        const date = new Date(instruction.createdAt).toLocaleDateString('ru-RU');
-
-        card.innerHTML = `
-            <div class="card-image">📋</div>
-            <div class="card-content">
-                <h3>${instruction.title}</h3>
-                <p>${instruction.steps ? instruction.steps.length : 0} шагов</p>
-                <div class="card-meta">
-                    <span class="date">${date}</span>
-                    <div class="card-actions">
-                        <button class="edit-instruction" data-id="${instruction.id}" title="Редактировать">✏️</button>
-                        <button class="favorite-btn ${instruction.favorite ? 'favorite' : ''}" data-id="${instruction.id}">⭐</button>
-                        <button class="delete-instruction" data-id="${instruction.id}">🗑️</button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        grid.appendChild(card);
+    instructions.forEach(instr => {
+      const el = document.createElement('div');
+      el.className = 'instruction-item';
+      el.textContent = instr.name;
+      el.addEventListener('click', () => {
+        this.showPreview(instr.name, instr.content);
+      });
+      list.appendChild(el);
     });
-}
+  },
 
-// Обновим showInstructionsList на showInstructionsGrid
-showInstructionsGrid() {
-    document.getElementById('welcome-screen').classList.add('hidden');
-    document.getElementById('instructions-grid').classList.remove('hidden');
-    document.getElementById('editor-view').classList.add('hidden');
-}
+  showPreview(title, content) {
+    document.getElementById('preview-title').textContent = title;
+    document.getElementById('preview-content').innerHTML = content;
+    document.getElementById('preview-modal').classList.remove('hidden');
+  },
+
+  closePreview() {
+    document.getElementById('preview-modal').classList.add('hidden');
+  },
+
+  showGroupModal() {
+    document.getElementById('group-name').value = '';
+    document.getElementById('group-modal').classList.remove('hidden');
+  },
+
+  closeGroupModal() {
+    document.getElementById('group-modal').classList.add('hidden');
+  },
+
+  showEditor(title = 'Новая инструкция', name = '', content = '') {
+    document.getElementById('editor-title').textContent = title;
+    document.getElementById('instruction-name').value = name;
+    document.getElementById('instruction-content').value = content;
+    document.getElementById('editor-modal').classList.remove('hidden');
+  },
+
+  closeEditor() {
+    document.getElementById('editor-modal').classList.add('hidden');
+  }
+};
+
+// Привязка закрытия модалок
+document.getElementById('close-preview-btn').addEventListener('click', () => ui.closePreview());
+document.getElementById('cancel-group-btn').addEventListener('click', () => ui.closeGroupModal());
+document.getElementById('cancel-instruction-btn').addEventListener('click', () => ui.closeEditor());

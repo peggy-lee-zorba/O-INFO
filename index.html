@@ -1,116 +1,86 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instruction Manager</title>
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Инструкции</title>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-    <!-- Страница авторизации -->
-    <div id="login-page" class="login-container">
-        <div class="login-card">
-            <h1>📋 Instruction Manager</h1>
-            <p class="login-subtitle">Управляйте своими инструкциями</p>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login">Логин</label>
-                    <input type="text" id="login" name="login" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" name="password" required autocomplete="current-password">
-                </div>
-                <button type="submit" class="btn-primary">Войти</button>
-                <div id="login-error" class="error-message"></div>
-            </form>
+  <!-- Экран авторизации -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-form">
+      <h2>Вход</h2>
+      <input type="text" id="login" placeholder="Логин" />
+      <input type="password" id="password" placeholder="Пароль" />
+      <button id="login-btn">Войти</button>
+      <div id="login-error" class="error"></div>
+    </div>
+  </div>
+
+  <!-- Основной интерфейс -->
+  <div id="main-app" class="hidden">
+    <aside class="sidebar">
+      <div class="group-list" id="group-list">
+        <!-- Группы будут добавлены через JS -->
+      </div>
+      <button id="add-group-btn" class="btn-add">+ Новая группа</button>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <h2 id="group-title">Выберите группу</h2>
+        <button id="add-instruction-btn" class="btn-add">+ Добавить инструкцию</button>
+      </header>
+      <div class="instructions-list" id="instructions-list">
+        <!-- Список инструкций -->
+      </div>
+    </main>
+  </div>
+
+    <!-- Модальное окно редактора -->
+    <div id="editor-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 id="editor-title">Новая инструкция</h3>
+        <input type="text" id="instruction-name" placeholder="Название инструкции" />
+        <textarea id="instruction-content" placeholder="HTML содержимое инструкции"></textarea>
+        
+        <!-- Новая кнопка загрузки -->
+        <button id="upload-html-btn" type="button">📁 Загрузить HTML-файл</button>
+        <input type="file" id="html-file-input" accept=".html,.htm" style="display: none;" />
+        
+        <div class="modal-actions">
+        <button id="save-instruction-btn">Сохранить</button>
+        <button id="cancel-instruction-btn">Отмена</button>
         </div>
     </div>
-
-    <!-- Основной интерфейс -->
-    <div id="main-app" class="app-container hidden">
-        <!-- Header Banner -->
-        <header class="header-banner">
-            <h1>Instruction Manager</h1>
-            <p class="header-subtitle">Управляйте своими инструкциями</p>
-        </header>
-
-        <!-- Navigation -->
-        <nav class="main-nav">
-            <ul id="groups-nav-list">
-                <li><a href="#" onclick="showHome(); return false;">Главная</a></li>
-                <!-- Группы будут добавлены здесь динамически -->
-            </ul>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="content-header">
-                <h2 id="content-title">Все инструкции</h2>
-                <button id="add-instruction-btn" class="btn-primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Добавить инструкцию
-                </button>
-            </div>
-
-            <div id="welcome-screen" class="welcome-screen">
-                <h2>Добро пожаловать!</h2>
-                <p>Выберите группу в меню навигации, чтобы начать работу с инструкциями.</p>
-            </div>
-
-            <div id="instructions-grid" class="instructions-grid hidden">
-                <!-- Карточки инструкций будут добавлены здесь -->
-            </div>
-
-            <div id="editor-view" class="editor-view hidden">
-                <!-- Редактор остается без изменений -->
-                <div class="editor-header">
-                    <button id="back-to-list" class="btn-secondary">← Назад</button>
-                    <h2 id="editor-title">Новая инструкция</h2>
-                    <button id="save-instruction" class="btn-primary">Сохранить</button>
-                </div>
-                <div id="instruction-form" class="instruction-form">
-                    <div class="form-group">
-                        <label for="instruction-title">Заголовок</label>
-                        <input type="text" id="instruction-title" required>
-                    </div>
-                    <div class="steps-container">
-                        <div class="steps-header">
-                            <h3>Шаги инструкции</h3>
-                            <button id="add-step" class="btn-secondary">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                                Добавить шаг
-                            </button>
-                        </div>
-                        <div id="steps-list" class="steps-list">
-                            <!-- Шаги будут добавляться сюда -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="app-footer">
-            <p>© 2025 Instruction Manager. Все права защищены.</p>
-        </footer>
     </div>
 
-    <!-- Модальные окна (остаются без изменений) -->
-    <div id="group-modal" class="modal hidden">
-        <!-- ... -->
+  <!-- Модальное окно группы -->
+  <div id="group-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Новая группа</h3>
+      <input type="text" id="group-name" placeholder="Название группы" />
+      <div class="modal-actions">
+        <button id="save-group-btn">Создать</button>
+        <button id="cancel-group-btn">Отмена</button>
+      </div>
     </div>
+  </div>
 
-    <div id="confirm-modal" class="modal hidden">
-        <!-- ... -->
+  <!-- Превью инструкции -->
+  <div id="preview-modal" class="modal hidden">
+    <div class="modal-content preview">
+      <h3 id="preview-title">Инструкция</h3>
+      <div id="preview-content"></div>
+      <button id="close-preview-btn">Закрыть</button>
     </div>
+  </div>
 
-    <script type="module" src="js/app.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
