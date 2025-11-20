@@ -44,11 +44,16 @@ const ui = {
             `;
             list.appendChild(el);
 
-            // Обработчики
-            el.querySelector('.instruction-name').addEventListener('click', () => {
-                this.showPreview(instr.name, instr.content);
+            // Обработчик клика по всей плашке (ДОБАВИЛИ)
+            el.addEventListener('click', (e) => {
+                // Проверяем, что клик не по кнопкам избранного и удаления
+                if (!e.target.classList.contains('favorite-star') && 
+                    !e.target.classList.contains('delete-btn')) {
+                    this.showPreview(instr.name, instr.content);
+                }
             });
 
+            // Обработчики для кнопок (используем stopPropagation)
             el.querySelector('.favorite-star').addEventListener('click', (e) => {
                 e.stopPropagation();
                 window.app.toggleFavorite(instr.id);
