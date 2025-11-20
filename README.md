@@ -6,9 +6,7 @@
 
 1. Скачайте все файлы
 2. Запустите `index.html` в браузере
-3. Используйте credentials:
-   - Login: `testuser`
-   - Password: `testuser2025`
+
 
 ## 📁 Структура проекта
 
