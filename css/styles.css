@@ -72,6 +72,63 @@ body {
   flex-direction: column;
 }
 
+.site-title {
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  background: #1a202c;
+  text-align: center;
+  border-bottom: 1px solid #4a5568;
+}
+
+.home-link {
+  padding: 12px 20px;
+  cursor: pointer;
+  color: #cbd5e0;
+  font-weight: 600;
+}
+
+.home-link:hover, .home-link.active {
+  background: #4a5568;
+  color: white;
+}
+
+.instruction-item {
+  position: relative;
+  padding-right: 60px; /* место для иконок */
+}
+
+.instruction-actions {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.instruction-actions button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #6c757d;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.instruction-actions button:hover {
+  color: #e53e3e;
+}
+
+.favorite-star.filled {
+  color: #ffc107;
+}
+
 .group-list .group-item {
   padding: 12px 20px;
   cursor: pointer;

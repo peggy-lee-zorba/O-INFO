@@ -9,16 +9,25 @@ window.app = {
   },
 
   bindEvents() {
-    // выбор группы и добавление инструкции обрабатываются в editor.js и ui.js
+    // уже есть обработчики в ui.js и editor.js
   },
 
   render() {
     ui.renderGroups(this.data.groups, this.activeGroupId);
-    if (this.activeGroupId) {
+
+    if (this.activeGroupId === 'favorites') {
+      document.getElementById('group-title').textContent = 'Избранные инструкции';
+      const favorites = this.data.instructions.filter(i => i.favorite);
+      ui.renderInstructions(favorites, true);
+    } else if (this.activeGroupId) {
       const group = this.data.groups.find(g => g.id === this.activeGroupId);
       document.getElementById('group-title').textContent = group ? group.name : 'Неизвестная группа';
       const instructions = this.data.instructions.filter(i => i.groupId === this.activeGroupId);
-      ui.renderInstructions(instructions);
+      ui.renderInstructions(instructions, false);
+    } else {
+      // Ничего не выбрано
+      document.getElementById('group-title').textContent = 'Выберите группу или "Главная"';
+      ui.renderInstructions([], false);
     }
   },
 
@@ -40,7 +49,8 @@ window.app = {
       id: newId,
       groupId: this.activeGroupId,
       name,
-      content
+      content,
+      favorite: false // по умолчанию не в избранном
     });
     saveStorage(this.data);
     this.render();
@@ -54,5 +64,20 @@ window.app = {
       saveStorage(this.data);
       this.render();
     }
+  },
+
+  toggleFavorite(id) {
+    const instr = this.data.instructions.find(i => i.id === id);
+    if (instr) {
+      instr.favorite = !instr.favorite;
+      saveStorage(this.data);
+      this.render(); // перерисовать текущий вид
+    }
+  },
+
+  deleteInstruction(id) {
+    this.data.instructions = this.data.instructions.filter(i => i.id !== id);
+    saveStorage(this.data);
+    this.render();
   }
 };
