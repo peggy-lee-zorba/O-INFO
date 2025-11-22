@@ -1,0 +1,410 @@
+/**
+ * Enhanced App Module for File System Storage
+ * Обновленная версия app.js с поддержкой файловой системы
+ */
+
+window.app = {
+    data: null,
+    activeGroupId: null,
+    isFileSystemMode: false,
+    instructionCache: new Map(), // Кэш инструкций для оптимизации
+
+    async init() {
+        // Инициализируем файловую систему
+        this.isFileSystemMode = await window.fileStorage.init();
+        
+        if (this.isFileSystemMode) {
+            console.log('✅ Используется файловая система');
+            await this.loadFromFiles();
+        } else {
+            console.log('⚠️ Файловая система недоступна, используем fallback');
+            this.data = loadStorage();
+            this.render();
+        }
+        
+        this.bindEvents();
+    },
+
+    // Загрузка данных из файловой системы
+    async loadFromFiles() {
+        try {
+            // Загружаем списки файлов
+            const instructionFiles = await window.fileStorage.getFileList('instructions');
+            const imageFiles = await window.fileStorage.getFileList('images');
+            
+            // Создаем структуру данных
+            this.data = {
+                groups: [
+                    { id: 'mail', name: 'Почта' },
+                    { id: 'jkh', name: 'ЖКХ' },
+                    { id: 'shops', name: 'Магазины' }
+                ],
+                instructions: [],
+                images: []
+            };
+
+            // Загружаем инструкции из файлов
+            for (const fileName of instructionFiles) {
+                const content = await window.fileStorage.readFile(fileName, 'instructions');
+                if (content) {
+                    const instruction = {
+                        id: fileName.replace('.html', ''),
+                        fileName: fileName,
+                        groupId: window.fileStorage.extractGroupId(fileName),
+                        name: window.fileStorage.extractNameFromContent(content),
+                        content: content,
+                        favorite: false // можно добавить метаданные позже
+                    };
+                    this.data.instructions.push(instruction);
+                    this.instructionCache.set(instruction.id, content);
+                }
+            }
+
+            // Загружаем изображения
+            for (const fileName of imageFiles) {
+                const url = await window.fileStorage.getImageURL(fileName);
+                if (url) {
+                    this.data.images.push({
+                        fileName: fileName,
+                        url: url,
+                        id: fileName
+                    });
+                }
+            }
+
+            this.render();
+        } catch (error) {
+            console.error('Ошибка загрузки из файловой системы:', error);
+            // Fallback на LocalStorage
+            this.data = loadStorage();
+            this.isFileSystemMode = false;
+            this.render();
+        }
+    },
+
+    bindEvents() {
+        // Уже есть обработчики в ui.js и editor.js
+    },
+
+    render() {
+        if (this.data) {
+            ui.renderGroups(this.data.groups, this.activeGroupId);
+            this.renderInstructions();
+        }
+    },
+
+    renderInstructions() {
+        if (this.activeGroupId === 'favorites') {
+            document.getElementById('group-title').textContent = 'Избранные инструкции';
+            const favorites = this.data.instructions.filter(i => i.favorite);
+            ui.renderInstructions(favorites, true);
+        } else if (this.activeGroupId) {
+            const group = this.data.groups.find(g => g.id === this.activeGroupId);
+            document.getElementById('group-title').textContent = group ? group.name : 'Неизвестная группа';
+            const instructions = this.data.instructions.filter(i => i.groupId === this.activeGroupId);
+            ui.renderInstructions(instructions, false);
+        } else {
+            document.getElementById('group-title').textContent = 'Выберите группу или "Главная"';
+            ui.renderInstructions([], false);
+        }
+    },
+
+    setActiveGroup(id) {
+        this.activeGroupId = id;
+        this.renderInstructions();
+    },
+
+    addGroup(name) {
+        const newId = 'group-' + Date.now();
+        this.data.groups.push({ id: newId, name });
+        this.saveData();
+        this.render();
+    },
+
+    async addInstruction(name, content) {
+        const newId = 'instr-' + Date.now();
+        const fileName = `${newId}.html`;
+        
+        if (this.isFileSystemMode) {
+            // Сохраняем в файл
+            const success = await window.fileStorage.createFile(fileName, content, 'instructions');
+            if (success) {
+                // Обновляем данные в памяти
+                this.data.instructions.push({
+                    id: newId,
+                    fileName: fileName,
+                    groupId: this.activeGroupId,
+                    name: name,
+                    content: content,
+                    favorite: false
+                });
+                
+                // Кэшируем содержимое
+                this.instructionCache.set(newId, content);
+                this.renderInstructions();
+                
+                // Показываем уведомление
+                ui.showNotification('Инструкция сохранена в файл', 'success');
+            } else {
+                ui.showNotification('Ошибка сохранения файла', 'error');
+            }
+        } else {
+            // Fallback на LocalStorage
+            this.data.instructions.push({
+                id: newId,
+                fileName: fileName,
+                groupId: this.activeGroupId,
+                name: name,
+                content: content,
+                favorite: false
+            });
+            this.saveData();
+            this.renderInstructions();
+        }
+    },
+
+    async updateInstruction(id, name, content) {
+        const instruction = this.data.instructions.find(i => i.id === id);
+        if (instruction) {
+            if (this.isFileSystemMode) {
+                // Обновляем файл
+                const success = await window.fileStorage.createFile(
+                    instruction.fileName, 
+                    content, 
+                    'instructions'
+                );
+                if (success) {
+                    instruction.name = name;
+                    instruction.content = content;
+                    
+                    // Обновляем кэш
+                    this.instructionCache.set(id, content);
+                    this.renderInstructions();
+                    ui.showNotification('Инструкция обновлена', 'success');
+                } else {
+                    ui.showNotification('Ошибка обновления файла', 'error');
+                }
+            } else {
+                instruction.name = name;
+                instruction.content = content;
+                this.saveData();
+                this.renderInstructions();
+            }
+        }
+    },
+
+    async deleteInstruction(id) {
+        const instruction = this.data.instructions.find(i => i.id === id);
+        if (instruction) {
+            if (this.isFileSystemMode) {
+                const success = await window.fileStorage.deleteFile(
+                    instruction.fileName, 
+                    'instructions'
+                );
+                if (success) {
+                    // Удаляем из данных
+                    this.data.instructions = this.data.instructions.filter(i => i.id !== id);
+                    // Очищаем кэш
+                    this.instructionCache.delete(id);
+                    this.renderInstructions();
+                    ui.showNotification('Инструкция удалена', 'success');
+                } else {
+                    ui.showNotification('Ошибка удаления файла', 'error');
+                }
+            } else {
+                this.data.instructions = this.data.instructions.filter(i => i.id !== id);
+                this.saveData();
+                this.renderInstructions();
+            }
+        }
+    },
+
+    async toggleFavorite(id) {
+        const instr = this.data.instructions.find(i => i.id === id);
+        if (instr) {
+            instr.favorite = !instr.favorite;
+            this.renderInstructions(); // перерисовать текущий вид
+            
+            const status = instr.favorite ? 'добавлена в избранное' : 'удалена из избранного';
+            ui.showNotification(`Инструкция ${status}`, 'info');
+        }
+    },
+
+    async loadInstructionContent(instruction) {
+        // Проверяем кэш сначала
+        if (this.instructionCache.has(instruction.id)) {
+            return this.instructionCache.get(instruction.id);
+        }
+
+        if (this.isFileSystemMode) {
+            try {
+                const content = await window.fileStorage.readFile(
+                    instruction.fileName, 
+                    'instructions'
+                );
+                if (content) {
+                    this.instructionCache.set(instruction.id, content);
+                    return content;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки содержимого инструкции:', error);
+                return instruction.content; // fallback на сохраненные данные
+            }
+        }
+        
+        return instruction.content; // default fallback
+    },
+
+    // Работа с изображениями
+    async uploadImage(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            ui.showNotification('Поддерживаются только изображения', 'error');
+            return null;
+        }
+
+        const fileName = `img-${Date.now()}-${file.name}`;
+        
+        if (this.isFileSystemMode) {
+            try {
+                // Создаем URL для отображения
+                const url = URL.createObjectURL(file);
+                
+                // Сохраняем файл в файловую систему
+                const reader = new FileReader();
+                return new Promise((resolve, reject) => {
+                    reader.onload = async (e) => {
+                        const content = e.target.result;
+                        const success = await window.fileStorage.createFile(
+                            fileName, 
+                            content, 
+                            'images'
+                        );
+                        
+                        if (success) {
+                            const imageData = {
+                                id: fileName,
+                                fileName: fileName,
+                                url: url,
+                                name: file.name,
+                                size: file.size,
+                                type: file.type
+                            };
+                            
+                            this.data.images.push(imageData);
+                            ui.showNotification('Изображение загружено', 'success');
+                            resolve(imageData);
+                        } else {
+                            URL.revokeObjectURL(url);
+                            reject(new Error('Ошибка сохранения изображения'));
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки изображения:', error);
+                ui.showNotification('Ошибка загрузки изображения', 'error');
+                return null;
+            }
+        } else {
+            // Fallback: сохраняем в LocalStorage
+            const reader = new FileReader();
+            return new Promise((resolve, reject) => {
+                reader.onload = (e) => {
+                    const url = e.target.result;
+                    const imageData = {
+                        id: fileName,
+                        fileName: fileName,
+                        url: url,
+                        name: file.name,
+                        size: file.size,
+                        type: file.type
+                    };
+                    
+                    this.data.images.push(imageData);
+                    ui.showNotification('Изображение загружено', 'success');
+                    resolve(imageData);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    },
+
+    async deleteImage(imageId) {
+        const image = this.data.images.find(img => img.id === imageId);
+        if (image) {
+            if (this.isFileSystemMode) {
+                const success = await window.fileStorage.deleteFile(
+                    image.fileName, 
+                    'images'
+                );
+                if (success) {
+                    this.data.images = this.data.images.filter(img => img.id !== imageId);
+                    URL.revokeObjectURL(image.url); // Освобождаем URL
+                    ui.showNotification('Изображение удалено', 'success');
+                    return true;
+                } else {
+                    ui.showNotification('Ошибка удаления изображения', 'error');
+                    return false;
+                }
+            } else {
+                this.data.images = this.data.images.filter(img => img.id !== imageId);
+                URL.revokeObjectURL(image.url);
+                ui.showNotification('Изображение удалено', 'success');
+                return true;
+            }
+        }
+        return false;
+    },
+
+    // Сохранение данных (для fallback режима)
+    saveData() {
+        if (!this.isFileSystemMode) {
+            saveStorage(this.data);
+        }
+    },
+
+    // Экспорт данных
+    async exportData() {
+        if (this.isFileSystemMode) {
+            const data = await window.fileStorage.exportAll();
+            if (data) {
+                this.downloadFile(
+                    JSON.stringify(data, null, 2), 
+                    `o-info-backup-${new Date().toISOString().split('T')[0]}.json`,
+                    'application/json'
+                );
+            }
+        } else {
+            const data = loadStorage();
+            this.downloadFile(
+                JSON.stringify(data, null, 2),
+                `o-info-backup-${new Date().toISOString().split('T')[0]}.json`,
+                'application/json'
+            );
+        }
+    },
+
+    // Вспомогательный метод для скачивания файлов
+    downloadFile(content, filename, contentType) {
+        const blob = new Blob([content], { type: contentType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    },
+
+    // Получение статистики
+    getStatistics() {
+        return {
+            totalInstructions: this.data?.instructions.length || 0,
+            totalGroups: this.data?.groups.length || 0,
+            totalImages: this.data?.images.length || 0,
+            favoritesCount: this.data?.instructions.filter(i => i.favorite).length || 0,
+            storageMode: this.isFileSystemMode ? 'filesystem' : 'localstorage'
+        };
+    }
+};
