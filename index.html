@@ -3,167 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>O-INFO: Система управления инструкциями v2.0</title>
-  <link rel="stylesheet" href="css/styles-enhanced.css" />
+  <title>Инструкции</title>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <!-- Экран авторизации -->
   <div id="login-screen" class="login-screen">
     <div class="login-form">
-      <h2>Вход в O-INFO</h2>
+      <h2>Вход</h2>
       <input type="text" id="login" placeholder="Логин" />
       <input type="password" id="password" placeholder="Пароль" />
       <button id="login-btn">Войти</button>
       <div id="login-error" class="error"></div>
-      <div class="demo-info">
-        <p><strong>Демо доступ:</strong></p>
-        <p>Логин: testuser</p>
-        <p>Пароль: testuser2025</p>
-      </div>
     </div>
   </div>
 
   <!-- Основной интерфейс -->
   <div id="main-app" class="hidden">
-    <!-- Боковая панель -->
     <aside class="sidebar">
-      <div class="site-title">
-        <span>O-INFO v2.0</span>
-        <small>Система инструкций</small>
-      </div>
-      
-      <!-- Навигация -->
-      <div class="nav-section">
-        <div class="group-item home-link" data-id="favorites">
-          🏠 Главная (Избранное)
-        </div>
-      </div>
-
-      <!-- Список групп -->
-      <div class="nav-section">
-        <div class="section-title">Группы инструкций</div>
-        <div class="group-list" id="group-list">
-          <!-- Группы будут добавлены через JS -->
-        </div>
-      </div>
-
-      <!-- Кнопки действий в сайдбаре -->
-      <div class="sidebar-actions">
-        <button id="add-group-btn" class="btn-secondary">+ Новая группа</button>
-      </div>
+        <div class="site-title">Инструкция по шагам...</div>
+            <div class="group-item home-link" data-id="favorites">
+                🏠 Главная
+            </div>
+            <div class="group-list" id="group-list">
+                <!-- Группы будут добавлены через JS -->
+            </div>
+        <button id="add-group-btn" class="btn-add">+ Новая группа</button>
     </aside>
 
-    <!-- Основная область контента -->
     <main class="main-content">
-      <!-- Заголовок и панель инструментов -->
       <header class="header">
-        <div class="header-left">
-          <h2 id="group-title">Выберите группу или "Главная"</h2>
-        </div>
-        <div class="header-right">
-          <!-- Основные действия -->
-          <button id="add-instruction-btn" class="btn-primary">📝 Новая инструкция</button>
-          <button id="image-gallery-btn" class="btn-secondary">🖼️ Изображения</button>
-          <button id="statistics-btn" class="btn-secondary">📊 Статистика</button>
-          <button id="export-btn" class="btn-secondary">💾 Экспорт</button>
-        </div>
+        <h2 id="group-title">Выберите группу</h2>
+        <button id="add-instruction-btn" class="btn-add">+ Добавить инструкцию</button>
       </header>
-
-      <!-- Статистика (скрытая по умолчанию) -->
-      <div id="stats-panel" class="stats-panel hidden">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number" id="stat-instructions">0</div>
-            <div class="stat-label">Инструкций</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="stat-groups">0</div>
-            <div class="stat-label">Групп</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="stat-images">0</div>
-            <div class="stat-label">Изображений</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="stat-favorites">0</div>
-            <div class="stat-label">Избранных</div>
-          </div>
-        </div>
-        <div class="storage-mode">
-          Режим хранения: <span id="storage-mode">-</span>
-        </div>
-      </div>
-
-      <!-- Список инструкций -->
-      <div class="instructions-section">
-        <div class="section-header">
-          <h3 id="section-title">Инструкции</h3>
-          <div class="search-filter">
-            <input type="text" id="search-input" placeholder="🔍 Поиск инструкций..." />
-            <button id="toggle-favorites-btn" class="btn-toggle">⭐ Показать избранные</button>
-          </div>
-        </div>
-        <div class="instructions-list" id="instructions-list">
-          <!-- Список инструкций -->
-        </div>
+      <div class="instructions-list" id="instructions-list">
+        <!-- Список инструкций -->
       </div>
     </main>
   </div>
 
   <!-- Модальное окно редактора -->
   <div id="editor-modal" class="modal hidden">
-    <div class="modal-content editor-modal">
-      <div class="modal-header">
+    <div class="modal-content">
         <h3 id="editor-title">Новая инструкция</h3>
-        <button class="modal-close" id="close-editor">&times;</button>
-      </div>
-      
-      <div class="editor-form">
-        <div class="form-group">
-          <label for="instruction-name">Название инструкции:</label>
-          <input type="text" id="instruction-name" placeholder="Введите название..." />
-        </div>
+        <input type="text" id="instruction-name" placeholder="Название инструкции" />
+        <textarea id="instruction-content" placeholder="HTML содержимое инструкции"></textarea>
         
-        <div class="form-group">
-          <label for="instruction-content">HTML содержимое:</label>
-          <textarea id="instruction-content" placeholder="Введите HTML содержимое инструкции..."></textarea>
-        </div>
+        <!-- Новая кнопка загрузки -->
+        <button id="upload-html-btn" type="button">📁 Загрузить HTML-файл</button>
+        <input type="file" id="html-file-input" accept=".html,.htm" style="display: none;" />
         
-        <!-- Панель инструментов редактора -->
-        <div class="editor-toolbar">
-          <div class="toolbar-group">
-            <button id="upload-html-btn" class="toolbar-btn" title="Загрузить HTML-файл">📁 HTML</button>
-            <input type="file" id="html-file-input" accept=".html,.htm" style="display: none;" />
-          </div>
-          
-          <div class="toolbar-group">
-            <button id="insert-image-btn" class="toolbar-btn" title="Вставить изображение">🖼️</button>
-            <button id="preview-btn" class="toolbar-btn" title="Предварительный просмотр">👁️</button>
-          </div>
+        <div class="modal-actions">
+        <button id="save-instruction-btn">Сохранить</button>
+        <button id="cancel-instruction-btn">Отмена</button>
         </div>
-      </div>
-      
-      <div class="modal-actions">
-        <button id="save-instruction-btn" class="btn-primary">💾 Сохранить</button>
-        <button id="cancel-instruction-btn" class="btn-secondary">Отмена</button>
-      </div>
     </div>
-  </div>
+    </div>
 
   <!-- Модальное окно группы -->
   <div id="group-modal" class="modal hidden">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3>Новая группа</h3>
-        <button class="modal-close" id="close-group">&times;</button>
-      </div>
-      <div class="form-group">
-        <label for="group-name">Название группы:</label>
-        <input type="text" id="group-name" placeholder="Введите название группы..." />
-      </div>
+      <h3>Новая группа</h3>
+      <input type="text" id="group-name" placeholder="Название группы" />
       <div class="modal-actions">
-        <button id="save-group-btn" class="btn-primary">✅ Создать</button>
-        <button id="cancel-group-btn" class="btn-secondary">Отмена</button>
+        <button id="save-group-btn">Создать</button>
+        <button id="cancel-group-btn">Отмена</button>
       </div>
     </div>
   </div>
@@ -171,49 +75,16 @@
   <!-- Превью инструкции -->
   <div id="preview-modal" class="modal hidden">
     <div class="modal-content preview">
-      <div class="modal-header">
-        <h3 id="preview-title">Предварительный просмотр</h3>
-        <button class="modal-close" id="close-preview">&times;</button>
-      </div>
-      <div id="preview-content" class="preview-content">
-        <!-- Содержимое инструкции -->
-      </div>
-      <div class="modal-actions">
-        <button id="edit-from-preview" class="btn-primary">✏️ Редактировать</button>
-        <button id="close-preview-btn" class="btn-secondary">Закрыть</button>
-      </div>
+      <h3 id="preview-title">Инструкция</h3>
+      <div id="preview-content"></div>
+      <button id="close-preview-btn">Закрыть</button>
     </div>
   </div>
 
-  <!-- Галерея изображений -->
-  <div id="gallery-modal" class="modal hidden">
-    <div class="modal-content gallery-modal">
-      <div class="modal-header">
-        <h3>Галерея изображений</h3>
-        <button class="modal-close" id="close-gallery">&times;</button>
-      </div>
-      <div class="gallery-content">
-        <div class="upload-area">
-          <button id="upload-image-btn" class="btn-primary">📁 Загрузить изображение</button>
-          <input type="file" id="image-file-input" accept="image/*" style="display: none;" />
-          <p class="upload-info">Поддерживаемые форматы: JPG, PNG, GIF, WebP</p>
-        </div>
-        <div class="image-grid" id="image-grid">
-          <!-- Изображения будут загружены динамически -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Контейнер уведомлений -->
-  <div id="notification-container" class="notification-container"></div>
-
-  <!-- Скрипты -->
   <script src="js/storage.js"></script>
-  <script src="js/fileStorage.js"></script>
-  <script src="js/ui-enhanced.js"></script>
-  <script src="js/editor-enhanced.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/editor.js"></script>
   <script src="js/auth.js"></script>
-  <script src="js/app-enhanced.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
